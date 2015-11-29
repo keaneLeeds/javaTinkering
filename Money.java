@@ -1,0 +1,140 @@
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.text.DecimalFormat;
+
+import org.apache.commons.lang.StringUtils;
+
+public class Money extends Number {
+    private static final long serialVersionUID = 1L;
+    private DecimalFormat dollars = new DecimalFormat("0.00");
+    private String value;
+
+    public Money() {
+        this.value = dollars.format("0.00");
+        
+    }
+
+    public Money(Number money) {
+        if(money != null && !StringUtils.isBlank(money.toString())) {
+            this.value = dollars.format(money);
+        } else {
+            this.value = dollars.format("0.00");
+        }
+    }
+
+    public Money(String money) {
+        try {
+            if(money !=null
+                && !StringUtils.isBlank(money)
+                && StringUtils.isAlpha(money))
+            {
+                this.value = dollars.format(money);
+            } else {
+                throw new Exception("invalid String passed in");
+            }
+        } catch(NumberFormatException nfe) {
+            throw new Exception("Bad number format", nfe);
+        } catch(Exception e) {
+            throw new Exception("Something went wrong, unspecified Exception found", e);
+        }
+    }
+
+    public Money add(Money money) {
+        BigDecimal augend = this.bigDecimalValue();
+        BigDecimal addend = money.bigDecimalValue();
+        BigDecimal sum = augend.add(addend);
+        Money total = new Money(sum);
+
+        return total;
+    }
+
+    public Money subtract(Money money) {
+        BigDecimal minuend = this.bigDecimalValue();
+        BigDecimal subtrahend = money.bigDecimalValue();
+        BigDecimal difference = minuend.subtract(subtrahend);
+        Money total = new Money(difference);
+
+        return total;
+    }
+
+    public Money multiply(Number multiplier) {
+        BigDecimal factor = this.bigDecimalValue();
+        BigDecimal multiplicand = BigDecimal.valueOf(multiplier.doubleValue());
+        BigDecimal product = factor.multiply(multiplicand);
+        Money total = new Money(product);
+
+        return total;
+    }
+
+    public Money divide(Number denominator) {
+        BigDecimal dividend = this.bigDecimalValue();
+        BigDecimal divisor = BigDecimal.valueOf(denominator.doubleValue());
+        BigDecimal ratio = dividend.divide(divisor);
+        Money total = new Money(ratio);
+
+        return total;
+    }
+
+    public Boolean equals(Money money) {
+        Boolean equals = money.toString().equals(this.value);
+        return equals;
+    }
+
+    public static Money sum(Money... money) {
+        Money accumulator = new Money();
+        for(Money monies : money) {
+            accumulator.add(monies);
+        }
+
+        return accumulator;
+    }
+
+    public String toString() {
+        return this.value;
+    }
+
+    public byte byteValue() {
+        Byte monies = Byte.parseByte(this.value);
+        return monies;
+    }
+
+    public short shortValue() {
+        Short monies = Short.parseShort(this.value);
+        return monies;
+    }
+
+    public int intValue() {
+        Integer monies = Integer.parseInt(this.value);
+        return monies;
+    }
+
+    public Integer integerValue() {
+        Integer monies = Integer.parseInt(this.value);
+        return monies;
+    }
+
+    public long longValue() {
+        Long monies = Long.parseLong(this.value);
+        return monies;
+    }
+
+    public float floatValue() {
+        Float monies = Float.parseFloat(this.value);
+        return monies;
+    }
+
+    public double doubleValue() {
+        Double monies = Double.parseDouble(this.value);
+        return monies;
+    }
+
+    public BigInteger bigIntegerValue() {
+        BigInteger monies = BigInteger.valueOf(this.longValue());
+        return monies;
+    }
+
+    public BigDecimal bigDecimalValue() {
+        BigDecimal monies = BigDecimal.valueOf(this.doubleValue());
+        return monies;
+    }
+}
